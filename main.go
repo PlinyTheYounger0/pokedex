@@ -19,7 +19,16 @@ func main() {
 
 		text := scanner.Text()
 		input := cleanInput(text)
+		userCommand := input[0]
 
-		fmt.Printf("Your first word was: %s\n", input[0])
+		commandRegistry := getCommands()
+
+		command, exists := commandRegistry[userCommand]
+		if !exists {
+			fmt.Println("Unknown Command")
+		} else {
+			command.callback()
+		}
+
 	}
 }
