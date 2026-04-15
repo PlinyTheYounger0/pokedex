@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/PlinyTheYounger0/pokedex/internal/pokeapi"
 )
 
-func startRepl(configPtr *config) {
+func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -28,7 +30,7 @@ func startRepl(configPtr *config) {
 		if !exists {
 			fmt.Println("Unknown Command")
 		} else {
-			err := command.callback(configPtr)
+			err := command.callback(cfg)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -44,6 +46,7 @@ func cleanInput(text string) []string {
 }
 
 type config struct {
-	next *string
-	prev *string
+	pokeapiClient    pokeapi.Client
+	nextLocationsUrl *string
+	prevLocationsUrl *string
 }

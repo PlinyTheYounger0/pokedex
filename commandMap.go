@@ -1,73 +1,42 @@
 package main
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
-	"net/http"
-
-	"github.com/PlinyTheYounger0/pokedex/internal/pokeapi"
 )
 
-func commandMap(configPtr *config) error {
-
-	if configPtr.next == nil {
-		baseURL := "https://pokeapi.co/api/v2/location-area"
-		configPtr.next = &baseURL
-	}
-
-	locationAreas, err := getLocationAreas(*configPtr.next)
+func commandMap(cfg *config) error {
+	locationsRes, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationsUrl)
 	if err != nil {
 		return err
 	}
 
-	configPtr.next = locationAreas.Next
-	configPtr.prev = locationAreas.Previous
+	cfg.nextLocationsUrl = locationsRes.Next
+	cfg.prevLocationsUrl = locationsRes.Previous
 
-	for _, la := range locationAreas.Results {
-		fmt.Println(la.Name)
+	for _, loc := range locationsRes.Results {
+		fmt.Println(loc.Name)
 	}
 
 	return nil
 }
 
-func commandMapb(configPtr *config) error {
-	if configPtr.prev == nil {
-		fmt.Println("You are on the first page")
-		return nil
+func commandMapb(cfg *config) error {
+	if cfg.prevLocationsUrl == nil {
+		return errors.New("You are on the first page")
 	}
 
-	locationAreas, err := getLocationAreas(*configPtr.prev)
+	locationsRes, err := cfg.pokeapiClient.ListLocations(cfg.prevLocationsUrl)
 	if err != nil {
 		return err
 	}
 
-	configPtr.next = locationAreas.Next
-	configPtr.prev = locationAreas.Previous
+	cfg.nextLocationsUrl = locationsRes.Next
+	cfg.prevLocationsUrl = locationsRes.Previous
 
-	for _, la := range locationAreas.Results {
-		fmt.Println(la.Name)
+	for _, loc := range locationsRes.Results {
+		fmt.Println(loc.Name)
 	}
 
 	return nil
-}
-
-func getLocationAreas(url string) (*pokeapi.LocationAreas, error) {
-	res, err := http.Get(url)
-	if err != nil {
-		return nil, fmt.Errorf("Error retrieving location areas: %w", err)
-	}
-	defer res.Body.Close()
-
-	data, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, fmt.Errorf("Error reading location areas: %w", err)
-	}
-
-	var locationAreas pokeapi.LocationAreas
-	if err := json.Unmarshal(data, &locationAreas); err != nil {
-		return nil, fmt.Errorf("Error unmarshaling location areas: %w", err)
-	}
-
-	return &locationAreas, nil
 }
