@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func startRepl() {
+func startRepl(configPtr *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -28,7 +28,7 @@ func startRepl() {
 		if !exists {
 			fmt.Println("Unknown Command")
 		} else {
-			err := command.callback()
+			err := command.callback(configPtr)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -41,4 +41,9 @@ func cleanInput(text string) []string {
 	inputLower := strings.ToLower(text)
 	words := strings.Fields(inputLower)
 	return words
+}
+
+type config struct {
+	next *string
+	prev *string
 }
