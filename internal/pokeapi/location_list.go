@@ -2,6 +2,7 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -12,25 +13,25 @@ func (c *Client) ListLocations(pageUrl *string) (ResShallowLocations, error) {
 		url = *pageUrl
 	}
 
-	val, ok := c.cache.Get(*pageUrl)
+	val, ok := c.cache.Get(url)
 	if !ok {
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			return ResShallowLocations{}, err
+			return ResShallowLocations{}, fmt.Errorf("ListLocations Request Error: %w", err)
 		}
 
 		res, err := c.httpClient.Do(req)
 		if err != nil {
-			return ResShallowLocations{}, err
+			return ResShallowLocations{}, fmt.Errorf("")
 		}
 		defer res.Body.Close()
 
-		val, err := io.ReadAll(res.Body)
+		val, err = io.ReadAll(res.Body)
 		if err != nil {
 			return ResShallowLocations{}, err
 		}
 
-		c.cache.Add(*pageUrl, val)
+		c.cache.Add(url, val)
 	}
 
 	locationsRes := ResShallowLocations{}

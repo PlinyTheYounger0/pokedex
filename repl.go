@@ -23,6 +23,10 @@ func startRepl(cfg *config) {
 		text := scanner.Text()
 		input := cleanInput(text)
 		userCommand := input[0]
+		args := []string{}
+		if len(input) > 1 {
+			args = input[1:]
+		}
 
 		commandRegistry := getCommands()
 
@@ -30,7 +34,7 @@ func startRepl(cfg *config) {
 		if !exists {
 			fmt.Println("Unknown Command")
 		} else {
-			err := command.callback(cfg)
+			err := command.callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}
