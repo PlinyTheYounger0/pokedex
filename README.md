@@ -11,20 +11,28 @@ Run the following command in a UNIX style terminal.
 
 ## Commands
 - Help
+    
     Lists the commands available for use with a brief description of each command. Arguements will be listed afte the command name in <>.
 - Exit
+    
     Ends the REPL and retrns the user to the terminal.
 - Map
+    
     Gets and caches 20 locations and prints them to the terminal.
 - Mapb
+    
     Goes back 20 locations and prints them to the terminal.
 - Explore
+    
     Gets and caches all pokemon in a desired location and prints them to terminal.
 - Catch
+    
     Allows the user to attempt to catch a pokemon. The difficulty of catch is directly related to the base experience of the pokemon being caught.
 - Inspect
+    
     Allows the user to inspect the stats and types of a pokemon that the user has caught.
 - Pokedex
+    
     Prints all pokemon in the users pokedex.
 
 ## Path Forward
