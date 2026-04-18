@@ -6,6 +6,7 @@ The pokedex explores the world of Pokemon in the terminal. The intent behind the
 
 ## Install
 Run the following command in a UNIX style terminal.
+
 `git clone https://github.com/PlinyTheYounger0/pokedex`
 
 ## Commands
